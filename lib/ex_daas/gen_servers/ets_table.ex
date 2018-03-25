@@ -38,6 +38,8 @@ defmodule ExDaas.Ets.Table do
       {:dets_tables, dets_tables},
     ] = args
     
+
+    IO.puts name
     :ets.new(name, [:named_table, :set, :public])
     
     {:ok,
