@@ -2,11 +2,11 @@ defmodule ExDaasWeb.ApiControllerTest do
   use ExDaasWeb.ConnCase
 
   setup do
-    :ets.delete_all_objects(:exdaas_cache_table) &&
-    :dets.delete_all_objects(:dets_table_one) &&
-    :dets.delete_all_objects(:dets_table_two) &&
-    :dets.delete_all_objects(:dets_table_three) &&
-    :dets.delete_all_objects(:dets_table_four)
+    :ets.delete_all_objects(:"ets_table_0") &&
+    :dets.delete_all_objects(:dets_table_0) &&
+    :dets.delete_all_objects(:dets_table_1) &&
+    :dets.delete_all_objects(:dets_table_2) &&
+    :dets.delete_all_objects(:dets_table_3)
   end
 
   def query() do
@@ -31,25 +31,25 @@ defmodule ExDaasWeb.ApiControllerTest do
     assert json_response(query(1), 200) == %{"id" => 1, "data" => %{"color" => "blue"}}
   end
 
-  test "POST /api - slam api" do
-    # 10k new records
+  # test "POST /api - slam api" do
+  #   # 10k new records
 
-    cold_time = :os.system_time(:seconds)
-    0..10_000
-    |> Enum.map(fn i -> Task.async(fn -> query(i) end) end)
-    |> Enum.each(fn t -> Task.await(t) end)
-    IO.puts "\n Cold slam seconds: #{:os.system_time(:seconds) - cold_time}"
+  #   cold_time = :os.system_time(:seconds)
+  #   0..10_000
+  #   |> Enum.map(fn i -> Task.async(fn -> query(i) end) end)
+  #   |> Enum.each(fn t -> Task.await(t) end)
+  #   IO.puts "\n Cold slam seconds: #{:os.system_time(:seconds) - cold_time}"
 
-    assert json_response(query(10_000), 200) == %{"id" => 10_000, "data" => %{"color" => "blue"}}
+  #   assert json_response(query(10_000), 200) == %{"id" => 10_000, "data" => %{"color" => "blue"}}
 
-    # 10k identical records
+  #   # 10k identical records
 
-    warm_time = :os.system_time(:seconds)
-    0..10_000
-    |> Enum.map(fn i -> Task.async(fn -> query(i) end) end)
-    |> Enum.each(fn t -> Task.await(t) end)
-    IO.puts " Warm slam seconds: #{:os.system_time(:seconds) - warm_time}"
+  #   warm_time = :os.system_time(:seconds)
+  #   0..10_000
+  #   |> Enum.map(fn i -> Task.async(fn -> query(i) end) end)
+  #   |> Enum.each(fn t -> Task.await(t) end)
+  #   IO.puts " Warm slam seconds: #{:os.system_time(:seconds) - warm_time}"
 
-    assert json_response(query(10_000), 200) == %{"id" => 10_000, "data" => %{"color" => "blue"}}
-  end
+  #   assert json_response(query(10_000), 200) == %{"id" => 10_000, "data" => %{"color" => "blue"}}
+  # end
 end

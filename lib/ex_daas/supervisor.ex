@@ -9,22 +9,30 @@ defmodule ExDaas.Supervisor do
   end
 
   def init(:ok) do
-    dets_tables = [
-      :dets_table_one,
-      :dets_table_two,
-      :dets_table_three,
-      :dets_table_four,
-    ]
+    ets_table_names = 0..3 |> Enum.map(fn i -> :"ets_table_#{i}" end)
+    dets_table_names = 0..3 |> Enum.map(fn i -> :"dets_table_#{i}" end)
 
-    children = [
-      worker(EtsTable, [[name: EtsTable, dets_tables: dets_tables]]),
-      worker(DetsTable, [[name: Enum.at(dets_tables, 0)]], [id: 1]),
-      worker(DetsTable, [[name: Enum.at(dets_tables, 1)]], [id: 2]),
-      worker(DetsTable, [[name: Enum.at(dets_tables, 2)]], [id: 3]),
-      worker(DetsTable, [[name: Enum.at(dets_tables, 3)]], [id: 4]),
-      worker(DetsTable, [[name: :dets_counter]], [id: 5]),
-    ]
+    dets_tables = dets_table_names
+    |> Enum.with_index
+    |> Enum.map(fn {t, i} ->
+      worker(DetsTable, [[name: t, ets_tables: ets_table_names]], [id: i])
+    end)
 
+    ets_tables = ets_table_names
+    |> Enum.with_index
+    |> Enum.map(fn {name, i} ->
+      worker(EtsTable, 
+        [[name: name, ets_tables: ets_table_names, dets_tables: dets_table_names]],
+        [id: i + 10]
+      )
+    end)
+
+    counter_table = [
+      worker(DetsTable, [[name: :dets_counter, ets_tables: ets_table_names]], [id: 5]),
+    ]
+    
+    children = ets_tables ++ counter_table ++ dets_tables
+    
     supervise(children, strategy: :one_for_one)
   end
 end
