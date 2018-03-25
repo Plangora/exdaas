@@ -15,7 +15,7 @@ defmodule ExDaas.Ets.Table do
   end
 
   def fetch(id, data, ets_table) do
-    GenServer.call(__MODULE__, {:fetch, {id, data, ets_table}})
+    GenServer.call(ets_table, {:fetch, {id, data, ets_table}})
   end
 
   def handle_call({:fetch, {id, data, ets_table}}, _from, state) do

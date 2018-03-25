@@ -10,27 +10,26 @@ Server Hostname:        0.0.0.0
 Server Port:            4000
 
 Document Path:          /api
-Document Length:        56155 bytes
+Document Length:        32 bytes
 
 Concurrency Level:      1
-Time taken for tests:   0.033 seconds
+Time taken for tests:   0.131 seconds
 Complete requests:      1
 Failed requests:        0
-Non-2xx responses:      1
 Keep-Alive requests:    1
-Total transferred:      56385 bytes
+Total transferred:      287 bytes
 Total body sent:        243
-HTML transferred:       56155 bytes
-Requests per second:    30.44 [#/sec] (mean)
-Time per request:       32.850 [ms] (mean)
-Time per request:       32.850 [ms] (mean, across all concurrent requests)
-Transfer rate:          1676.21 [Kbytes/sec] received
-                        7.22 kb/s sent
-                        1683.43 kb/s total
+HTML transferred:       32 bytes
+Requests per second:    7.61 [#/sec] (mean)
+Time per request:       131.454 [ms] (mean)
+Time per request:       131.454 [ms] (mean, across all concurrent requests)
+Transfer rate:          2.13 [Kbytes/sec] received
+                        1.81 kb/s sent
+                        3.94 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
 Connect:        0    0   0.0      0       0
-Processing:    33   33   0.0     33      33
-Waiting:       33   33   0.0     33      33
-Total:         33   33   0.0     33      33
+Processing:   131  131   0.0    131     131
+Waiting:      131  131   0.0    131     131
+Total:        131  131   0.0    131     131

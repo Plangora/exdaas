@@ -23,12 +23,12 @@ defmodule ExDaas.Supervisor do
     |> Enum.map(fn {name, i} ->
       worker(EtsTable, 
         [[name: name, ets_tables: ets_table_names, dets_tables: dets_table_names]],
-        [id: i + 4]
+        [id: Enum.at(ets_table_names, i)]
       )
     end)
 
     counter_table = [
-      worker(DetsTable, [[name: :dets_counter, ets_tables: ets_table_names]], [id: 8]),
+      worker(DetsTable, [[name: :dets_counter, ets_tables: ets_table_names]], [id: :persist_counter]),
     ]
     
     children = ets_tables ++ counter_table ++ dets_tables
