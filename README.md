@@ -6,7 +6,9 @@ Serialized - fault tolerant - self caching - self sharding - NoSQL DB :rocket:
 
 Provides a RESTful API that can handle concurrent requests (Phoenix) but serializes all writes to disk.
 
-All serialized writes can be split up by amount of shards :rocket:
+All serialized writes can be split up by amount of shards.
+
+Default shard size is 4. Any other wanted size can be set via `SHARD_LIMIT` (Any number above 0).
 
 DiskIO is delegated via DETS and all cache is handled using ETS.
 
