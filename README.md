@@ -65,8 +65,7 @@ You will need two tabs/panes/shell for this:
 #### Another Alternative for Benching
 
 ```bash
-if [ -f dets_counter ]; then $(rm dets_*); fi \
-  && iex -S mix phx.server
+./scripts/console.bench.sh
 ```
 
 ```elixir
