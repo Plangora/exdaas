@@ -2,11 +2,15 @@
 
 Elixir Database as a Service
 
-Serialized - fault tolerant - self caching - NoSQL DB :rocket:
+Serialized - fault tolerant - self caching - self sharding - NoSQL DB :rocket:
 
 Provides a RESTful API that can handle concurrent requests (Phoenix) but serializes all writes to disk.
 
+All serialized writes can be split up by amount of shards :rocket:
+
 DiskIO is delegated via DETS and all cache is handled using ETS.
+
+If the entire app fails, the data is loaded form disk into cache, and performance is back to normal.
 
 _Suprisingly performant_ :smile:
 
@@ -50,9 +54,14 @@ Make sure you have your ssh key as an authorized key for your target node!
         b. In the foreground: `PORT=4000 ./bin/exdaas foreground`
         c. In interactive mode: `PORT=4000 ./bin/exdaas console`
 
+### Backing up data
+
+1. Tarball: `./scripts/archive.tar.sh
+2. Zip: `./scripts/achrive.zip.sh
+
 ### Current Benchmarks
 
-Mean 12.3k req/s in an Alpine Docker Container running on Ubuntu 17.10 in production mode on a 2 Core Intel i7 from 2014
+Mean ~12.3k req/s in an Alpine Docker Container running on Ubuntu 17.10 in production mode on a 2 Core Intel i7 from 2014
 
 #### To run benchmarks
 
@@ -66,6 +75,14 @@ You will need two tabs/panes/shell for this:
 
 ```bash
 ./scripts/console.bench.sh
+```
+
+**If you want to increase the shard size**
+
+_You may set `SHARD_LIMIT` to any positive number over 0_
+
+```bash
+SHARD_LIMIT=16 ./scripts/console.bench.sh
 ```
 
 ```elixir
