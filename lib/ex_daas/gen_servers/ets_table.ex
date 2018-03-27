@@ -4,13 +4,11 @@ defmodule ExDaas.Ets.Table do
   use GenServer
 
   def start_link(opts \\ []) do
-    [name: name, ets_tables: ets_tables, dets_tables: dets_tables] = opts
+    [name: name, dets_table: dets_table] = opts
 
     GenServer.start_link(__MODULE__, [
       {:name, name},
-      {:log_limit, 1_000_000},
-      {:ets_tables, ets_tables},
-      {:dets_tables, dets_tables},
+      {:dets_table, dets_table},
     ], opts)
   end
 
@@ -19,36 +17,22 @@ defmodule ExDaas.Ets.Table do
   end
 
   def handle_call({:fetch, {id, data, ets_table}}, _from, state) do
-    %{dets_tables: dets_tables} = state
-
-    case is_number(id) do
-      true ->
-        table = Enum.at(dets_tables, rem(id, length(dets_tables)))
-        {:reply, Model.fetch(id, data, :ets_table_0, table), state}
-      false ->
-        {:reply, Model.new_user(data, :ets_table_0, dets_tables), state}
-    end
+    %{dets_table: dets_table} = state
+    {:reply, Model.fetch(id, data, ets_table, dets_table), state}
   end
 
   def init(args) do
     [
       {:name, name},
-      {:log_limit, log_limit},
-      {:ets_tables, ets_tables},
-      {:dets_tables, dets_tables},
+      {:dets_table, dets_table},
     ] = args
     
-
-    IO.puts name
-    :ets.new(name, [:named_table, :set, :public])
+    :ets.new(name, [:named_table, :set, :public, read_concurrency: true])
     
     {:ok,
       %{
-        log_limit: log_limit,
         name: name,
-        ets_tables: ets_tables,
-        dets_tables: dets_tables,
-        read_concurrency: true,
+        dets_table: dets_table,
       },
     }
   end
