@@ -65,8 +65,7 @@ You will need two tabs/panes/shell for this:
 #### Another Alternative for Benching
 
 ```bash
-if [ -f dets_counter ]; then $(rm dets_counter); fi \
-  && if [ -f dets_table_one ]; then $(rm dets_table_*); fi \
+if [ -f dets_counter ]; then $(rm dets_*); fi \
   && iex -S mix phx.server
 ```
 
@@ -75,11 +74,19 @@ alias ExDaas.Ets.Table, as: EtsTable
 
 data = %{color: "blue"}
 
+ets_tables = 0..3 |> Enum.map(fn i -> :"ets_table_#{i}" end)
+
 # this will be cold cache
-0..20_000 |> Enum.each(fn i -> EtsTable.fetch(i, data) end)
+0..20_000 |> Enum.each(fn i ->
+  table_id = rem(i, length(ets_tables))
+  EtsTable.fetch(i, data, Enum.at(ets_tables, table_id))
+end)
 
 # this will be warm cache
-0..20_000 |> Enum.each(fn i -> EtsTable.fetch(i, data) end)
+0..20_000 |> Enum.each(fn i ->
+  table_id = rem(i, length(ets_tables))
+  EtsTable.fetch(i, data, Enum.at(ets_tables, table_id))
+end)
 ```
 
 Exit the shell and `rm exdaas_persistance_table`
