@@ -21,6 +21,27 @@ defmodule ExDaasWeb.ApiControllerTest do
     build_conn() |> get("/api", id: id)
   end
 
+  def only_cmd_query(id, query, values) do
+    build_conn() |> get("/api/cmd", id: id, cmd: %{query: query, values: values})
+  end
+  
+    
+  test "GET /api/cmd - grabs on color from data Map" do
+    post_query()
+
+    result = json_response(only_cmd_query(1, "ONLY", ["color"]), 200)
+
+    assert result == "blue"
+  end
+
+  test "GET /api/cmd - returns 404 when more than one ONLY value is provided" do
+    post_query()
+
+    result = response(only_cmd_query(1, "ONLY", ["color", "uhh oh"]), 500)
+
+    assert result == "MORE THAN ONE ITEM IN A LIST IS NOT SUPPORTED LOL"
+  end
+
   test "POST /api - increments count when different api make queries" do
     post_query()
     post_query()

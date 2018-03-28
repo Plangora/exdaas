@@ -18,6 +18,33 @@ defmodule ExDaasWeb.ApiController do
     json(conn, fetch(uid, data, table))
   end
 
+  def cmd(conn, %{"id" => id, "cmd" => cmd} = _params) do
+    %{"query" => query, "values" => values} = cmd
+
+    {_uid, table} = ets_table(id)
+    [{_id, data}] = :ets.lookup(table, id)
+
+    case query do
+      "ONLY" ->
+        cmd(:only, conn, values, data)
+
+      _lol_wut ->
+        conn |> send_resp(500, "#{query} is not supported or invalid")
+    end
+
+    
+  end
+
+  def cmd(:only, conn, values, data) do
+    case values |> length do
+      1 ->
+        json(conn, Map.get(data, Enum.at(values, 0)))
+
+      _ ->
+        conn |> send_resp(500, "MORE THAN ONE ITEM IN A LIST IS NOT SUPPORTED LOL")
+    end
+  end
+
   defp fetch(id, data, ets_table) do
     ExDaas.Ets.Table.fetch(id, data, ets_table)
   end
