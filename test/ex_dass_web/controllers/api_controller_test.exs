@@ -50,7 +50,10 @@ defmodule ExDaasWeb.ApiControllerTest do
 
     IO.puts("\n Cold slam seconds: #{:os.system_time(:seconds) - cold_time}")
 
-    assert json_response(get_query(20_000), 200) == %{"id" => 20_000, "data" => %{"color" => "blue"}}
+    assert json_response(get_query(20_000), 200) == %{
+             "id" => 20_000,
+             "data" => %{"color" => "blue"}
+           }
 
     # 10k identical records
 
@@ -62,7 +65,10 @@ defmodule ExDaasWeb.ApiControllerTest do
 
     IO.puts(" Warm slam seconds: #{:os.system_time(:seconds) - warm_time}")
 
-    assert json_response(get_query(10_000), 200) == %{"id" => 10_000, "data" => %{"color" => "blue"}}
+    assert json_response(get_query(10_000), 200) == %{
+             "id" => 10_000,
+             "data" => %{"color" => "blue"}
+           }
   end
 
   test "GET /api/cmd - grabs on color from data Map" do

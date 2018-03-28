@@ -7,26 +7,26 @@ defmodule ExDaasWeb.ApiController do
   @ets_tables Counter.shard_count_tables(:ets)
 
   def show(conn, %{"id" => id} = _params) do
-    json conn, %{id: id, data: data(id)}
+    json(conn, %{id: id, data: data(id)})
   end
 
   def create_or_update(conn, %{"id" => id, "data" => data} = _params) do
     {uid, table} = ets_table(id)
 
-    json conn, fetch(uid, data, table)
+    json(conn, fetch(uid, data, table))
   end
 
   def cmd(conn, %{"id" => id, "cmd" => cmd} = _params) do
     %{"query" => query, "keys" => keys} = cmd
 
-    case  Cmd.exe(query, keys, data(id)) do
+    case Cmd.exe(query, keys, data(id)) do
       :error ->
         conn
         |> put_status(500)
-        |> json(%{message: "#{query} not supported"})   
+        |> json(%{message: "#{query} not supported"})
 
       data ->
-        json conn, data      
+        json(conn, data)
     end
   end
 
