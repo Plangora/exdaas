@@ -21,8 +21,8 @@ defmodule ExDaasWeb.ApiControllerTest do
     build_conn() |> get("/api", id: id)
   end
 
-  def only_cmd_query(id, query, values) do
-    build_conn() |> get("/api/cmd", id: id, cmd: %{query: query, values: values})
+  def only_cmd_query(id, query, keys) do
+    build_conn() |> get("/api/cmd", id: id, cmd: %{query: query, keys: keys})
   end
 
   test "POST /api - increments count when different api make queries" do
@@ -70,14 +70,22 @@ defmodule ExDaasWeb.ApiControllerTest do
 
     result = json_response(only_cmd_query(1, "ONLY", ["color"]), 200)
 
-    assert result == "blue"
+    assert result == %{"values" => ["blue"]}
   end
 
-  test "GET /api/cmd - returns 404 when more than one ONLY value is provided" do
+  test "GET /api/cmd - returns 200 when more than one ONLY value is provided - even if value is invalid" do
     post_query()
 
-    result = response(only_cmd_query(1, "ONLY", ["color", "uhh oh"]), 500)
+    result = json_response(only_cmd_query(1, "ONLY", ["color", "uhh oh"]), 200)
 
-    assert result == "MORE THAN ONE ITEM IN A LIST IS NOT SUPPORTED LOL"
+    assert result == %{"values" => ["blue", nil]}
+  end
+
+  test "GET /api/cmd - returns 500 when query is not supported" do
+    post_query()
+
+    result = json_response(only_cmd_query(1, "NOPE", []), 500)
+
+    assert result == %{"message" => "NOPE not supported"}
   end
 end
