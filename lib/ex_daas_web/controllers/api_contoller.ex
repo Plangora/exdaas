@@ -30,9 +30,7 @@ defmodule ExDaasWeb.ApiController do
 
       _lol_wut ->
         conn |> send_resp(500, "#{query} is not supported or invalid")
-    end
-
-    
+    end    
   end
 
   def cmd(:only, conn, values, data) do
