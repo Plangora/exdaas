@@ -24,7 +24,6 @@ defmodule ExDaasWeb.ApiControllerTest do
   def only_cmd_query(id, query, values) do
     build_conn() |> get("/api/cmd", id: id, cmd: %{query: query, values: values})
   end
-  
     
   test "GET /api/cmd - grabs on color from data Map" do
     post_query()
